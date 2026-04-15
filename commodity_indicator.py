@@ -133,10 +133,8 @@ def build_dashboard():
     print("\nDashboard built! Opening in browser...")
     
     # Save to an actual HTML file and open it
-    html_filename = "TDX_Futures_Dashboard.html"
-    fig.write_html(html_filename)
-    fig.show()
-    print(f"File saved locally as: {html_filename}")
+    fig.write_html("index.html")
+    print("Dashboard built and saved as index.html!")
 
 if __name__ == "__main__":
     build_dashboard()
