@@ -133,15 +133,19 @@ def send_email_alert(alert_messages):
     # Pull credentials from GitHub Secrets
     sender_email = os.environ.get("EMAIL_SENDER")
     sender_password = os.environ.get("EMAIL_PASSWORD")
-    receiver_email = os.environ.get("EMAIL_RECEIVER")
+    receiver_emails_str = os.environ.get("EMAIL_RECEIVER")
 
-    if not sender_email or not sender_password or not receiver_email:
+    if not sender_email or not sender_password or not receiver_emails_str:
         print("Email credentials not found in environment. Skipping email dispatch.")
         return
 
+    # Convert the comma-separated string from GitHub into a clean Python list
+    receiver_list = [email.strip() for email in receiver_emails_str.split(',')]
+
     msg = MIMEMultipart()
     msg['From'] = sender_email
-    msg['To'] = receiver_email
+    # The 'To' header displays all recipients
+    msg['To'] = ", ".join(receiver_list) 
     msg['Subject'] = f"📊 Trading Bot Alerts: {len(alert_messages)} Triggers Detected"
 
     body = "Technical triggers:\n\n"
@@ -151,13 +155,14 @@ def send_email_alert(alert_messages):
     msg.attach(MIMEText(body, 'plain'))
 
     try:
-        # Assuming Gmail SMTP. Change to smtp.mail.yahoo.com or others if needed
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
         server.login(sender_email, sender_password)
-        server.send_message(msg)
+        
+        # Use sendmail instead of send_message to easily handle lists of recipients
+        server.sendmail(sender_email, receiver_list, msg.as_string())
         server.quit()
-        print("✅ Alert email sent successfully!")
+        print(f"✅ Alert email sent successfully to {len(receiver_list)} recipients!")
     except Exception as e:
         print(f"❌ Failed to send email: {e}")
 
