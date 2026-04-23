@@ -95,33 +95,33 @@ def evaluate_alerts(df, asset_name):
 
     # 1. Trend Change (Golden Line / Empty Line Crossover)
     if pd.isna(yesterday['Golden_Line']) and not pd.isna(today['Golden_Line']):
-        alerts.append(f"🟢 {asset_name}: Trend turned BULLISH (Golden Line crossover).")
+        alerts.append(f"{asset_name}: Trend turned BULLISH (Golden Line crossover).")
     elif pd.isna(yesterday['Empty_Line']) and not pd.isna(today['Empty_Line']):
-        alerts.append(f"🔴 {asset_name}: Trend turned BEARISH (Empty Line crossover).")
+        alerts.append(f"{asset_name}: Trend turned BEARISH (Empty Line crossover).")
 
     # 2. Radar Momentum Change
     if pd.isna(yesterday['Radar_Up']) and not pd.isna(today['Radar_Up']):
-        alerts.append(f"📈 {asset_name}: Short-term Radar turned UP.")
+        alerts.append(f"{asset_name}: Short-term Radar turned UP.")
     elif pd.isna(yesterday['Radar_Down']) and not pd.isna(today['Radar_Down']):
-        alerts.append(f"📉 {asset_name}: Short-term Radar turned DOWN.")
+        alerts.append(f"{asset_name}: Short-term Radar turned DOWN.")
 
     # 3. Bollinger Band Breakouts
     if today['Close'] > today['BB_Upper']:
-        alerts.append(f"⚠️ {asset_name}: Price broke ABOVE Upper Bollinger Band ({today['Close']:.2f}).")
+        alerts.append(f"{asset_name}: Price broke ABOVE Upper Bollinger Band ({today['Close']:.2f}).")
     elif today['Close'] < today['BB_Lower']:
-        alerts.append(f"⚠️ {asset_name}: Price broke BELOW Lower Bollinger Band ({today['Close']:.2f}).")
+        alerts.append(f"{asset_name}: Price broke BELOW Lower Bollinger Band ({today['Close']:.2f}).")
 
     # 4. RSI Extremes
     if today['RSI'] >= 70:
-        alerts.append(f"🔥 {asset_name}: RSI is Overbought at {today['RSI']:.1f}.")
+        alerts.append(f"{asset_name}: RSI is Overbought at {today['RSI']:.1f}.")
     elif today['RSI'] <= 30:
-        alerts.append(f"🧊 {asset_name}: RSI is Oversold at {today['RSI']:.1f}.")
+        alerts.append(f"{asset_name}: RSI is Oversold at {today['RSI']:.1f}.")
 
     # 5. TD Sequential Exhaustion
     if today['Countdown_Up'] == 13:
-        alerts.append(f"🚨 {asset_name}: TD Sequential Exhaustion 13 (POTENTIAL TOP/SELL).")
+        alerts.append(f"{asset_name}: TD Sequential Exhaustion 13 (POTENTIAL TOP/SELL).")
     elif today['Countdown_Down'] == 13:
-        alerts.append(f"🚨 {asset_name}: TD Sequential Exhaustion 13 (POTENTIAL BOTTOM/BUY).")
+        alerts.append(f"{asset_name}: TD Sequential Exhaustion 13 (POTENTIAL BOTTOM/BUY).")
 
     return alerts
 
@@ -146,10 +146,9 @@ def send_email_alert(alert_messages):
     msg['From'] = sender_email
     # The 'To' header displays all recipients
     msg['To'] = ", ".join(receiver_list) 
-    msg['Subject'] = f"📊 Trading Bot Alerts: {len(alert_messages)} Triggers Detected"
+    msg['Subject'] = f"Trading Alerts: {len(alert_messages)} Triggers Detected"
 
-    body = "Technical triggers:\n\n"
-    body += "\n".join(alert_messages)
+    body = "\n".join(alert_messages)
     body += "\n\nView Dashboard: https://tyh4n.github.io/Macro-Econ-Dashboard/"
 
     msg.attach(MIMEText(body, 'plain'))
@@ -162,9 +161,9 @@ def send_email_alert(alert_messages):
         # Use sendmail instead of send_message to easily handle lists of recipients
         server.sendmail(sender_email, receiver_list, msg.as_string())
         server.quit()
-        print(f"✅ Alert email sent successfully to {len(receiver_list)} recipients!")
+        print(f"Alert email sent successfully to {len(receiver_list)} recipients!")
     except Exception as e:
-        print(f"❌ Failed to send email: {e}")
+        print(f"Failed to send email: {e}")
 
 # --- DASHBOARD BUILDER ---
 def build_dashboard():
