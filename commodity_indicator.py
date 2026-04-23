@@ -144,9 +144,9 @@ def send_email_alert(alert_messages):
     msg['To'] = receiver_email
     msg['Subject'] = f"📊 Trading Bot Alerts: {len(alert_messages)} Triggers Detected"
 
-    body = "Here are your technical analysis triggers for today:\n\n"
+    body = "Technical triggers:\n\n"
     body += "\n".join(alert_messages)
-    body += "\n\nView Dashboard: [Insert Your GitHub Pages URL Here]"
+    body += "\n\nView Dashboard: https://tyh4n.github.io/Macro-Econ-Dashboard/"
 
     msg.attach(MIMEText(body, 'plain'))
 
